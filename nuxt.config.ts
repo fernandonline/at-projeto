@@ -7,5 +7,16 @@ export default defineNuxtConfig({
     define: {
       'process.env.DEBUG': false
     }
+  },
+  runtimeConfig: {
+    public: {
+      fbApiKey: process.env.FB_API_KEY,
+      fbAuthDomain: process.env.FB_AUTH_DOMAIN,
+      fbProjectId: process.env.FB_PROJECT_ID,
+      fbStorageBucket: process.env.FB_STORAGE_BUCKET,
+      fbMessagingSenderId: process.env.FB_MESSAGING_SENDER_ID,
+      fbAppId: process.env.FB_APP_ID,
+      fbMeasurementId: process.env.FB_MEASUREMENT_ID
+    }
   }
 })

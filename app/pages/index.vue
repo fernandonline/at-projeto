@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Heart, QrCode } from "lucide-vue-next";
+import GoogleAuthLogin from "~/components/GoogleAuthLogin.vue";
 </script>
 
 <template>
@@ -34,6 +35,8 @@ import { Heart, QrCode } from "lucide-vue-next";
               <div class="btn-gradient-overlay"></div>
             </button>
           </div>
+
+          <GoogleAuthLogin/>
 
           <div class="d-flex align-items-center justify-content-center justify-content-lg-start gap-2 text-muted small">
             <Heart class="text-danger heart-beat" style="width:16px; height:16px" />
@@ -74,7 +77,6 @@ import { Heart, QrCode } from "lucide-vue-next";
 /* Gradients */
 .gradient-text {
   background: linear-gradient(90deg, #f72585, #720026);
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
