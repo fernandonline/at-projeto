@@ -1,15 +1,20 @@
-import { defineEventHandler, getRouterParam } from 'h3';
-import { getMessagesCollection } from '../../db/client';
-import { convertId } from '../../utils/convertId';
+import { defineEventHandler, createError } from 'h3';
+import { getMessagesCollection } from '../db/client';
+import { convertId } from '../utils/converId';
 
 export default defineEventHandler(async (event) => {
-  const slug = getRouterParam(event, 'slug');
-  if (!slug) return { status: 400, message: "Slug inválido" };
+  const { slug } = event.context.params || {};
+
+  if (!slug) {
+    throw createError({ statusCode: 400, statusMessage: "Slug inválido" });
+  }
 
   const collection = await getMessagesCollection();
   const doc = await collection.findOne({ slug });
 
-  if (!doc) return { status: 404, message: "Não encontrado" };
+  if (!doc) {
+    throw createError({ statusCode: 404, statusMessage: "Mensagem não encontrada" });
+  }
 
-  return convertId(doc);
+  return convertId ? convertId(doc) : doc;
 });

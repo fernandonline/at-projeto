@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import { firebaseLogout } from "../../server/api/auth";
-
-
-const handleLogout = async () => {
-  try {
-    await firebaseLogout();
-    // Opcional: redirecionar o usuário ou limpar o estado local após o logout
+  import { logout } from "../../server/api/firebase/authentication";
+  const handleLogout = async () => {
+    try {
+      logout();
         await navigateTo('/')
-  } catch (error) {
-
-  }
-};
+    } catch (error) { }
+  };
 </script>
 
 <template>
-  <div>
     <button @click="handleLogout">Sair</button>
-  </div>
 </template>
