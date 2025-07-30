@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Heart, QrCode } from "lucide-vue-next";
-import GoogleAuthLogin from "~/components/GoogleAuthLogin.vue";
+import GoogleAuthLogin from "@/components/login/GoogleAuthLogin.vue";
 </script>
 
 <template>

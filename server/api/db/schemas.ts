@@ -10,8 +10,8 @@ export interface Message {
   id?: string;
   userId: string;
   title: string;
+  date: string;
   message: string;
-  date?: string;
   imageUrl?: string;
   publicLink: string;
   publicLinkQR: string;
