@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface User {
   id?: string;
   uid: string; // ID do Firebase
@@ -15,4 +17,28 @@ export interface Message {
   imageUrl?: string;
   publicLink: string;
   publicLinkQR: string;
+}
+
+
+export function getUsersModel() {
+  const schema = new mongoose.Schema({
+    uid: String,
+    email: String,
+    name: String,
+    createdAt: Date,
+  });
+  return mongoose.models.User || mongoose.model("User", schema);
+}
+
+export function getMessagesModel() {
+  const schema = new mongoose.Schema({
+    userId: String,
+    title: String,
+    date: String,
+    message: String,
+    publicLink: String,
+    publicLinkQR: String,
+    createdAt: { type: Date, default: Date.now }
+  });
+  return mongoose.models.Message || mongoose.model("Message", schema);
 }

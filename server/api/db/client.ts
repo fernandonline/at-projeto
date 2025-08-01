@@ -1,32 +1,51 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import mongoose from 'mongoose'
+import { useRuntimeConfig } from '#imports' // isso importa corretamente no contexto Nuxt 3
 
-const uri = process.env.MONGODB_URI!;
-const options = {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-};
-
-const client = new MongoClient(uri, options);
-
-let cachedDb: any;
+let isConnected = false
 
 export async function connectDb() {
-  if (!cachedDb) {
-    await client.connect();
-    cachedDb = client.db(process.env.MONGODB_NAME);
+  if (isConnected) return
+
+  const config = useRuntimeConfig()
+  const uri = config.mongoDb
+  const dbName = config.mongoName || 'amote'
+
+  if (!uri) {
+    throw new Error('⚠️ MONGO_URI não está definida em runtimeConfig')
   }
-  return cachedDb;
+
+  try {
+    await mongoose.connect(uri, {
+      dbName,
+    })
+    isConnected = true
+    console.log('✅ Conectado ao MongoDB com Mongoose')
+  } catch (err) {
+    console.error('❌ Erro ao conectar com Mongoose:', err)
+    throw err
+  }
 }
 
-export async function getUsersCollection() {
-  const db = await connectDb();
-  return db.collection("users");
+
+export function getUsersModel() {
+  const schema = new mongoose.Schema({
+    uid: String,
+    email: String,
+    name: String,
+    createdAt: Date,
+  });
+  return mongoose.models.User || mongoose.model("User", schema);
 }
 
-export async function getMessagesCollection() {
-  const db = await connectDb();
-  return db.collection("messages");
+export function getMessagesModel() {
+  const schema = new mongoose.Schema({
+    userId: String,
+    title: String,
+    date: String,
+    message: String,
+    publicLink: String,
+    publicLinkQR: String,
+    createdAt: { type: Date, default: Date.now }
+  });
+  return mongoose.models.Message || mongoose.model("Message", schema);
 }

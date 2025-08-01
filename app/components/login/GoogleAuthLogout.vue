@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { logout } from "../../server/api/firebase/authentication";
+  import { logout } from "@/../server/api/firebase/authentication";
   const handleLogout = async () => {
     try {
       logout();

@@ -1,6 +1,5 @@
 import { defineEventHandler, createError, H3Event } from 'h3'
-import { getMessagesCollection } from '../db/client'
-import { ObjectId } from 'mongodb'
+import { connectDb, getMessagesModel } from '../db/client'
 
 export default defineEventHandler(async (event: H3Event) => {
   const params = event.context.params
@@ -9,10 +8,12 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const messageId = params.id
-  const messages = await getMessagesCollection()
+  await connectDb()
+  const Message = getMessagesModel()
+
   let doc
   try {
-    doc = await messages.findOne({ _id: new ObjectId(messageId) })
+    doc = await Message.findById(messageId)
   } catch (e) {
     throw createError({ statusCode: 400, statusMessage: 'ID inválido' })
   }
@@ -21,11 +22,9 @@ export default defineEventHandler(async (event: H3Event) => {
     throw createError({ statusCode: 404, statusMessage: 'Mensagem não encontrada' })
   }
 
-  const { _id, ...rest } = doc
+  const { _id, ...rest } = doc.toObject()
   return {
     id: _id.toString(),
     ...rest
   }
 })
-
-

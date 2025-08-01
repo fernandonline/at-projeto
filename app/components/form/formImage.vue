@@ -1,30 +1,45 @@
-<template>
-  <div>
-    <input type="file" @change="handleUpload" />
-    <p v-if="base64">Imagem processada</p>
-    <button @click="enviar" :disabled="!base64">Próximo</button>
-  </div>
-</template>
-
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 const emit = defineEmits(['proximo'])
-const base64 = ref('')
+const imageUrl = ref('')
+const status = ref('')
 
-function handleUpload(e) {
-  const file = e.target.files[0]
+async function handleUpload(event) {
+  const file = event.target.files[0]
   if (!file) return
 
-  const reader = new FileReader()
-  reader.onload = () => {
-    base64.value = reader.result
-    // ou envie pro Cloudinary e salve a URL
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('upload_preset', 'amote-upload')
+
+  status.value = 'enviando'
+
+  try {
+    const res = await fetch(process.env.NUXT_PUBLIC_CLOUD_UPLINK, {
+      method: 'POST',
+      body: formData
+    })
+
+    const data = await res.json()
+    imageUrl.value = data.secure_url
+    status.value = 'ok'
+  } catch (e) {
+    console.error(e)
+    status.value = 'erro'
   }
-  reader.readAsDataURL(file)
 }
 
 function enviar() {
-  emit('proximo', { imageUrl: base64.value })
+  emit('proximo', { imageUrl: imageUrl.value === 'ok'})
 }
 </script>
+
+<template>
+  <div>
+    <input name="image" type="file" id="fileName" accept="image/*" @change="handleUpload"/>
+    <p v-if="status === 'ok'">Imagem enviada!</p>
+    <p v-if="status === 'erro'">Erro no upload 😥</p>
+    <button @click="enviar" :disabled="!imageUrl">Próximo</button>
+  </div>
+</template>

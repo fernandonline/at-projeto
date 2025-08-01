@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { entrarComGoogle } from "../../server/api/firebase/authentication";
+import { entrarComGoogle } from "@/../server/api/firebase/authentication";
 
 async function fazerLogin() {
   const user = await entrarComGoogle();
@@ -8,7 +8,6 @@ async function fazerLogin() {
     return;
   }
 
-  // envia pro seu backend Nuxt/Nitro
   const res = await fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -16,8 +15,7 @@ async function fazerLogin() {
   });
 
   if (res.ok) {
-    alert("Login efetuado e usuário cadastrado no MongoDB!");
-    // aqui você pode redirecionar ou salvar no store
+    await navigateTo('/form')
   } else {
     const err = await res.text();
     alert("Erro ao cadastrar: " + err);
